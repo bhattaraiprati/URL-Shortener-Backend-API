@@ -14,10 +14,10 @@ const sequelize = new Sequelize(DATABASE_URL, {
   dialectOptions: {
     ssl: {
       require: true,
-      rejectUnauthorized: false // Neon requires SSL
+      rejectUnauthorized: false 
     }
   },
-  logging: false // Set to console.log to see SQL queries
+  logging: false 
 });
 
-export default sequelize;
+export default sequelize;

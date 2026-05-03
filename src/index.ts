@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5000;
 app.set('trust proxy', true);
 
 app.use(cors({
-  origin: 'http://localhost:3000', // Update this for production
+  origin: 'http://localhost:3000', 
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type']
 }));
@@ -29,10 +29,9 @@ app.get('/health', (req, res) => {
 
 let server: any;
 
-// Sync Database and Start Server
 const startServer = async () => {
   try {
-    await sequelize.sync({ alter: true }); // Use alter: true to update schema without dropping data
+    await sequelize.sync({ alter: true });
     console.log('Database synchronized');
     
     server = app.listen(PORT, () => {
@@ -45,11 +44,8 @@ const startServer = async () => {
   }
 };
 
-
 startServer();
 
-
-// Graceful Shutdown
 const shutdown = () => {
   console.log('\nShutting down server gracefully...');
   server.close(() => {
@@ -57,7 +53,6 @@ const shutdown = () => {
     process.exit(0);
   });
 
-  // Force exit after 5 seconds if not closed
   setTimeout(() => {
     console.error('Could not close server in time, forcefully shutting down');
     process.exit(1);

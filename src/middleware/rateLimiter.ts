@@ -3,7 +3,7 @@ import { RateLimitData } from '../types/interfaces';
 
 const rateLimitStore = new Map<string, RateLimitData>();
 
-const WINDOW_MS = 60 * 1000; // 1 minute
+const WINDOW_MS = 60 * 1000; 
 const MAX_REQUESTS = 5;
 
 export const rateLimiter = (req: Request, res: Response, next: NextFunction): void => {
@@ -16,7 +16,7 @@ export const rateLimiter = (req: Request, res: Response, next: NextFunction): vo
 
   const userData = rateLimitStore.get(ip)!;
 
-  // Reset window if expired
+
   if (now - userData.windowStart > WINDOW_MS) {
     userData.count = 0;
     userData.windowStart = now;
@@ -38,7 +38,7 @@ export const rateLimiter = (req: Request, res: Response, next: NextFunction): vo
   userData.count += 1;
   rateLimitStore.set(ip, userData);
 
-  // Periodic cleanup
+
   if (Math.random() < 0.1) cleanOldEntries();
 
   next();

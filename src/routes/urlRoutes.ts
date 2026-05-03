@@ -19,7 +19,7 @@ router.post('/shorten', rateLimiter, async (req: Request, res: Response) => {
 
     let shortCode = generateShortCode(originalUrl);
 
-    // Handle collision
+    // Handle collision between urls
     let existing = await UrlModel.findByShortCode(shortCode);
     while (existing) {
       shortCode = generateShortCode(originalUrl);
@@ -44,8 +44,8 @@ router.post('/shorten', rateLimiter, async (req: Request, res: Response) => {
   }
 });
 
-// 2. Get all URLs - Specific route
-router.get('/urls', async (req: Request, res: Response) => {   // Changed from /geturls
+// Get all URLs 
+router.get('/urls', async (req: Request, res: Response) => { 
   try {
     const urls = await UrlModel.getAllUrls();
     res.json({ success: true, data: urls });
@@ -55,12 +55,12 @@ router.get('/urls', async (req: Request, res: Response) => {   // Changed from /
   }
 });
 
-// 3. Get analytics for a specific URL
+//  Get analytics for a specific URL based on the alias code
 router.get('/analytics/:shortCode', async (req: Request, res: Response) => {
   try {
     const { shortCode } = req.params;
     
-    // Check if URL exists
+    // Check URL exists or not
     const url = await UrlModel.findByShortCode(shortCode);
     if (!url) {
       res.status(404).json({ success: false, message: 'Short URL not found' });
@@ -69,13 +69,11 @@ router.get('/analytics/:shortCode', async (req: Request, res: Response) => {
 
     const analytics = await UrlModel.getAnalytics(shortCode);
     
-    // Create a map of existing click data
     const clickMap = new Map();
     analytics.forEach((item: any) => {
       clickMap.set(item.date, parseInt(item.count, 10) || 0);
     });
 
-    // Generate last 7 days and fill in counts
     const formattedAnalytics = [];
     for (let i = 6; i >= 0; i--) {
       const date = new Date();
@@ -126,24 +124,9 @@ router.get('/:shortCode', async (req: Request, res: Response) => {
   await UrlModel.incrementClicks(shortCode);
   await UrlModel.recordClick(shortCode, ip, userAgent);
 
-  // Use 302 (Temporary Redirect) instead of 301 (Permanent) to prevent browser caching.
-  // This ensures that every click hits our server so we can track it.
-  // @ts-ignore - Sequelize model instance access
   res.redirect(302, url.original_url);
 });
 
-
-
-// // Get all URLs for analytics dashboard
-// router.get('/geturls', async (req: Request, res: Response) => {
-//   try {
-//     const urls = UrlModel.getAllUrls();
-//     res.json({ success: true, data: urls });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ success: false, message: 'Failed to fetch URLs' });
-//   }
-// });
 
 
 

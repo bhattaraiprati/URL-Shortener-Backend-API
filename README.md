@@ -119,9 +119,8 @@ npm install
 ```
 ### Step 2: Setup `.env`
 ```
-PORT=5000
 DATABASE_URL=your_postgres_url (create database at Neon or supabase db and replace this url)
-BASE_URL=http://localhost:5000
+
 ```
 ### Step 3: Run project
 ```
@@ -181,7 +180,7 @@ http://localhost:5000/api
 
 ```json
 {
-  "message": "Rate limit exceeded",
+  "message": "Rate limit exceeded. You can only shorten 5 URLs per minute",
   "secondsRemaining": 45
 }
 ```
