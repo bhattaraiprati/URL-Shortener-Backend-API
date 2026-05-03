@@ -43,7 +43,7 @@ When a user opens a short URL:
 
 ---
 
-## How Rate Limiter Works (Simple Explanation)
+## How Rate Limiter Works
 
 The rate limiter is implemented using an **in-memory Map**.
 
@@ -95,6 +95,7 @@ src/
 
 ### Step 1: Clone the repo
 git clone https://github.com/bhattaraiprati/URL-Shortener-Backend-API.git
+
 cd Shortener-Backend-API
 
 ### Step 2: Build & Run
@@ -113,19 +114,19 @@ http://localhost:5000
 ##  Running Locally
 
 ### Step 1: Install dependencies
-
+```
 npm install
-
+```
 ### Step 2: Setup `.env`
-
+```
 PORT=5000
 DATABASE_URL=your_postgres_url (create database at Neon or supabase db and replace this url)
 BASE_URL=http://localhost:5000
-
+```
 ### Step 3: Run project
-
+```
 npm run dev
-
+```
 
 ##  Health Check
 
@@ -139,6 +140,96 @@ Response:
 {
   "status": "OK",
   "message": "Server is running"
+}
+```
+---
+
+#  API Documentation
+
+Base URL:
+
+```
+http://localhost:5000/api
+```
+
+---
+
+## 1. Shorten URL
+
+### POST `/shorten`
+
+### Request
+
+```json
+{
+  "originalUrl": "https://example.com"
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "shortCode": "abc123",
+  "shortUrl": "http://localhost:5000/abc123",
+  "originalUrl": "https://example.com"
+}
+```
+
+### Error (Rate Limit)
+
+```json
+{
+  "message": "Rate limit exceeded",
+  "secondsRemaining": 45
+}
+```
+
+---
+
+## 2. Get All URLs
+
+### GET `/urls`
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": "1",
+      "short_code": "abc123",
+      "original_url": "https://example.com",
+      "clicks": 10,
+      "created_at": "2026-01-01"
+    }
+  ]
+}
+```
+
+---
+
+## 3. Get Analytics
+
+### GET `/analytics/:alias`
+
+### Example
+
+```
+/analytics/abc123
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": [
+    { "date": "2026-01-01", "clicks": 5 },
+    { "date": "2026-01-02", "clicks": 8 }
+  ]
 }
 ```
 
