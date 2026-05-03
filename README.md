@@ -33,7 +33,7 @@ When a user opens a short URL:
 ### 3. Custom Rate Limiter
 
 * Each IP can create only **5 short URLs per minute**
-* If exceeded → returns **HTTP 429 error**
+* If exceeded -> returns **HTTP 429 error**
 * Includes retry time
 
 ### 4. Analytics
@@ -49,19 +49,19 @@ The rate limiter is implemented using an **in-memory Map**.
 
 * Each user (IP address) has:
 
-  * `count` → number of requests
-  * `windowStart` → start time of 1-minute window
+  * `count` -> number of requests
+  * `windowStart` -> start time of 1-minute window
 
 ### Flow:
 
-1. When request comes → check IP
-2. If first time → create entry
-3. If 1 minute passed → reset count
+1. When request comes -> check IP
+2. If first time -> create entry
+3. If 1 minute passed -> reset count
 4. If request count > 5:
 
    * Block request
    * Return 429 error with retry time
-5. Otherwise → allow request
+5. Otherwise -> allow request
 
 This is called a **Fixed Window Rate Limiting Algorithm**.
 
