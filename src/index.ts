@@ -3,11 +3,13 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import urlRoutes from './routes/urlRoutes';
 import sequelize from './config/db';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
 app.set('trust proxy', true);
 
@@ -18,6 +20,27 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+// Swagger Configuration
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'URL Shortener API',
+      version: '1.0.0',
+      description: 'API documentation for the URL Shortener project',
+    },
+    servers: [
+      {
+        url: `http://localhost:${PORT}`,
+      },
+    ],
+  },
+  apis: ['./src/routes/*.ts', './src/index.ts'], 
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // API Routes
 app.use('/api', urlRoutes);
@@ -48,10 +71,14 @@ startServer();
 
 const shutdown = () => {
   console.log('\nShutting down server gracefully...');
-  server.close(() => {
-    console.log('Server closed successfully.');
+  if (server) {
+    server.close(() => {
+      console.log('Server closed successfully.');
+      process.exit(0);
+    });
+  } else {
     process.exit(0);
-  });
+  }
 
   setTimeout(() => {
     console.error('Could not close server in time, forcefully shutting down');
@@ -61,5 +88,3 @@ const shutdown = () => {
 
 process.on('SIGINT', shutdown);   
 process.on('SIGTERM', shutdown); 
-
-

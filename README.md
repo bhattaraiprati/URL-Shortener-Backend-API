@@ -145,6 +145,16 @@ Response:
 
 #  API Documentation
 
+To explore and test the APIs, you can use the **Swagger UI** available locally.
+
+### How to Access Swagger UI:
+1.  Run the project locally: `npm run dev`
+2.  Open your browser and go to: `http://localhost:5000/api-docs`
+
+From there, you can view all endpoints, see request/response schemas, and try out the APIs directly from your browser.
+
+---
+
 Base URL:
 
 ```

@@ -5,6 +5,35 @@ import { UrlModel } from '../models/Url';
 
 const router = Router();
 
+/**
+ * @swagger
+ * /api/shorten:
+ *   post:
+ *     summary: Create a short URL
+ *     tags: [URL]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - originalUrl
+ *             properties:
+ *               originalUrl:
+ *                 type: string
+ *                 description: The long URL to be shortened
+ *                 example: https://www.google.com
+ *     responses:
+ *       201:
+ *         description: URL shortened successfully
+ *       400:
+ *         description: Invalid URL provided
+ *       429:
+ *         description: Rate limit exceeded
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/shorten', rateLimiter, async (req: Request, res: Response) => {
   try {
     const { originalUrl } = req.body;
@@ -44,7 +73,29 @@ router.post('/shorten', rateLimiter, async (req: Request, res: Response) => {
   }
 });
 
-// Get all URLs 
+/**
+ * @swagger
+ * /api/urls:
+ *   get:
+ *     summary: Get all shortened URLs
+ *     tags: [URL]
+ *     responses:
+ *       200:
+ *         description: A list of shortened URLs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       500:
+ *         description: Failed to fetch URLs
+ */
 router.get('/urls', async (req: Request, res: Response) => { 
   try {
     const urls = await UrlModel.getAllUrls();
@@ -55,7 +106,27 @@ router.get('/urls', async (req: Request, res: Response) => {
   }
 });
 
-//  Get analytics for a specific URL based on the alias code
+/**
+ * @swagger
+ * /api/analytics/{shortCode}:
+ *   get:
+ *     summary: Get click analytics for a short URL
+ *     tags: [Analytics]
+ *     parameters:
+ *       - in: path
+ *         name: shortCode
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The short code of the URL
+ *     responses:
+ *       200:
+ *         description: Analytics data for the last 7 days
+ *       404:
+ *         description: Short URL not found
+ *       500:
+ *         description: Failed to fetch analytics
+ */
 router.get('/analytics/:shortCode', async (req: Request, res: Response) => {
   try {
     const { shortCode } = req.params;
@@ -97,8 +168,25 @@ router.get('/analytics/:shortCode', async (req: Request, res: Response) => {
   }
 });
 
-
-// Redirect + Track Click
+/**
+ * @swagger
+ * /api/{shortCode}:
+ *   get:
+ *     summary: Redirect to the original URL
+ *     tags: [Redirect]
+ *     parameters:
+ *       - in: path
+ *         name: shortCode
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The short code to redirect
+ *     responses:
+ *       302:
+ *         description: Redirect to the original URL
+ *       404:
+ *         description: Short URL not found
+ */
 router.get('/:shortCode', async (req: Request, res: Response) => {
   const { shortCode } = req.params;
   
@@ -126,8 +214,5 @@ router.get('/:shortCode', async (req: Request, res: Response) => {
 
   res.redirect(302, url.original_url);
 });
-
-
-
 
 export default router;
