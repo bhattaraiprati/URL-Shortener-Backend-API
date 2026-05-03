@@ -79,6 +79,7 @@ src/
  - types/         # Interfaces
  - index.ts       # Entry point
 
+```
 
 ## Tech Stack
 
@@ -92,12 +93,17 @@ src/
 
 ## Running with Docker
 
-### Step 1: Build & Run
+### Step 1: Clone the repo
+git clone https://github.com/bhattaraiprati/URL-Shortener-Backend-API.git
+cd Shortener-Backend-API
 
+### Step 2: Build & Run
+```
 docker-compose up --build
 
+```
 
-### Step 2: Access API
+### Step 3: Access API
 
 ```
 http://localhost:5000
@@ -113,7 +119,7 @@ npm install
 ### Step 2: Setup `.env`
 
 PORT=5000
-DATABASE_URL=your_postgres_url (Neon or supabase db)
+DATABASE_URL=your_postgres_url (create database at Neon or supabase db and replace this url)
 BASE_URL=http://localhost:5000
 
 ### Step 3: Run project
