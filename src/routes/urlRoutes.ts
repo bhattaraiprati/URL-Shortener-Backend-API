@@ -46,12 +46,12 @@ router.post('/shorten', rateLimiter, async (req: Request, res: Response) => {
       return;
     }
 
-    let shortCode = generateShortCode(originalUrl);
+    let shortCode = generateShortCode();
 
     // Handle collision between urls
     let existing = await UrlModel.findByShortCode(shortCode);
     while (existing) {
-      shortCode = generateShortCode(originalUrl);
+      shortCode = generateShortCode();
       existing = await UrlModel.findByShortCode(shortCode);
     }
 
